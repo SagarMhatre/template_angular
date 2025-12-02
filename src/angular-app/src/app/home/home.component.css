@@ -1,8 +1,15 @@
 .home-card {
-  max-width: 640px;
-  margin: 2rem auto;
+  max-width: 540px;
+  margin: 0 auto;
 }
 
-mat-card-content p {
-  margin: 0;
+.status {
+  margin: 1rem 0 0;
+  color: #0f172a;
+}
+
+.error {
+  margin: 1rem 0 0;
+  color: #b91c1c;
+  font-weight: 600;
 }
