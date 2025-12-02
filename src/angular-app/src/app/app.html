@@ -1,0 +1,33 @@
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<mat-toolbar color="primary" class="app-toolbar">
+  <a
+    mat-button
+    class="brand"
+    routerLink="/login"
+    routerLinkActive="active"
+    #brandLink="routerLinkActive"
+    [routerLinkActiveOptions]="{ exact: true }"
+    [attr.aria-current]="brandLink.isActive ? 'page' : null"
+  >
+    {{ title() }}
+  </a>
+  <span class="spacer" aria-hidden="true"></span>
+  <a
+    mat-stroked-button
+    color="accent"
+    routerLink="/login"
+    routerLinkActive="active"
+    #loginLink="routerLinkActive"
+    [routerLinkActiveOptions]="{ exact: true }"
+    [attr.aria-current]="loginLink.isActive ? 'page' : null"
+  >
+    Login
+  </a>
+</mat-toolbar>
+
+<main class="app-main" id="main-content">
+  <div class="content">
+    <router-outlet />
+  </div>
+</main>

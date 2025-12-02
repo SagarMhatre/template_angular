@@ -1,0 +1,19 @@
+:host {
+  display: block;
+  width: min(480px, 100%);
+  margin: 0 auto;
+}
+
+.login-card {
+  padding: 1rem;
+}
+
+.login-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.status {
+  margin: 1rem 0 0;
+}
