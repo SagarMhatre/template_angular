@@ -1,10 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [provideRouter(routes)]
     }).compileComponents();
   });
 
@@ -19,7 +22,7 @@ describe('App', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    const navLink = compiled.querySelector('.brand a');
+    const navLink = compiled.querySelector('.brand');
 
     expect(navLink?.textContent?.trim()).toBe('angular-app');
   });

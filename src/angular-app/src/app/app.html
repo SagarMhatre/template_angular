@@ -15,6 +15,17 @@
   <span class="spacer" aria-hidden="true"></span>
   <a
     mat-stroked-button
+    color="primary"
+    routerLink="/home"
+    routerLinkActive="active"
+    #homeLink="routerLinkActive"
+    [routerLinkActiveOptions]="{ exact: true }"
+    [attr.aria-current]="homeLink.isActive ? 'page' : null"
+  >
+    Home
+  </a>
+  <a
+    mat-stroked-button
     color="accent"
     routerLink="/login"
     routerLinkActive="active"
