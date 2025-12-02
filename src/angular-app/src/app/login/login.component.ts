@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { Router } from '@angular/router';
 
 type LoginFormGroup = FormGroup<{
   username: FormControl<string>;
@@ -60,11 +61,23 @@ type LoginFormGroup = FormGroup<{
             name="password"
             autocomplete="current-password"
             required
-            minlength="8"
-            [attr.aria-invalid]="loginForm.controls.password.invalid && loginForm.controls.password.touched"
+            minlength="3"
+            [attr.aria-invalid]="
+              (loginForm.controls.password.invalid && loginForm.controls.password.touched) ||
+              credentialMismatch()
+            "
           />
-          @if (loginForm.controls.password.invalid && loginForm.controls.password.touched) {
-            <mat-error>Password is required (min 8 characters).</mat-error>
+          @if (
+            (loginForm.controls.password.invalid && loginForm.controls.password.touched) ||
+            credentialMismatch()
+          ) {
+            <mat-error>
+              @if (credentialMismatch()) {
+                Password must match the username.
+              } @else {
+                Password is required (min 3 characters).
+              }
+            </mat-error>
           }
         </mat-form-field>
 
@@ -87,13 +100,15 @@ type LoginFormGroup = FormGroup<{
 })
 export class LoginComponent {
   private readonly formBuilder = inject(NonNullableFormBuilder);
+  private readonly router = inject(Router);
 
   protected readonly submitting = signal(false);
   protected readonly feedback = signal('');
+  protected readonly credentialMismatch = signal(false);
 
   protected readonly loginForm: LoginFormGroup = this.formBuilder.group({
     username: this.formBuilder.control('', [Validators.required, Validators.minLength(3)]),
-    password: this.formBuilder.control('', [Validators.required, Validators.minLength(8)])
+    password: this.formBuilder.control('', [Validators.required, Validators.minLength(3)])
   });
 
   protected readonly disableSubmit = computed(
@@ -109,11 +124,22 @@ export class LoginComponent {
 
     this.submitting.set(true);
     this.feedback.set('');
+    this.credentialMismatch.set(false);
 
     queueMicrotask(() => {
-      const { username } = this.loginForm.getRawValue();
+      const { username, password } = this.loginForm.getRawValue();
+
+      if (password !== username) {
+        this.loginForm.controls.password.markAsTouched();
+        this.credentialMismatch.set(true);
+        this.submitting.set(false);
+        this.feedback.set('Password must match the username.');
+        return;
+      }
+
       this.submitting.set(false);
       this.feedback.set(`Signed in as ${username}.`);
+      void this.router.navigate(['/home']);
     });
   }
 }
