@@ -7,6 +7,7 @@
         matInput
         rows="6"
         formControlName="content"
+        (input)="resetValidation()"
         required
         [attr.aria-invalid]="form.controls.content.invalid && form.controls.content.touched"
       ></textarea>
@@ -15,10 +16,21 @@
       }
     </mat-form-field>
 
-    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
-      Submit
-    </button>
+    <div class="editor-actions">
+      <button mat-stroked-button type="button" (click)="clear()">
+        Clear
+      </button>
+      <button mat-stroked-button color="primary" type="button" (click)="validate()" [disabled]="form.invalid">
+        Validate
+      </button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || !validated()">
+        Submit
+      </button>
+    </div>
   </form>
+  @if (validationMessage()) {
+    <p class="status success" role="status">{{ validationMessage() }}</p>
+  }
   @if (error()) {
     <p class="status error" role="alert">{{ error() }}</p>
   }

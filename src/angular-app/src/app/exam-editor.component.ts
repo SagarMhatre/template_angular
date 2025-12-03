@@ -21,6 +21,9 @@ export class ExamEditorComponent {
 
   protected readonly submitted = signal(false);
   protected readonly error = signal('');
+  protected readonly validationMessage = signal('');
+  protected readonly validated = signal(false);
+  private readonly validatedQuestionSets = signal<QuestionSet[]>([]);
   protected readonly form = new FormGroup({
     content: new FormControl(
       `{
@@ -89,10 +92,25 @@ export class ExamEditorComponent {
     )
   });
 
-  protected submit(): void {
+  protected resetValidation(): void {
+    this.validated.set(false);
+    this.validationMessage.set('');
+    this.error.set('');
+    this.submitted.set(false);
+    this.validatedQuestionSets.set([]);
+  }
+
+  protected clear(): void {
+    this.form.controls.content.setValue('');
+    this.resetValidation();
+  }
+
+  protected validate(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.error.set('Please paste valid JSON.');
+      this.validated.set(false);
+      this.validatedQuestionSets.set([]);
       return;
     }
 
@@ -106,15 +124,41 @@ export class ExamEditorComponent {
       const questionSets = this.shuffleQuestionSets(this.normalizeQuestionSets(parsed));
       if (!questionSets.length) {
         this.error.set('No question_sets found.');
+        this.validated.set(false);
+        this.validatedQuestionSets.set([]);
         return;
       }
-      this.examState.setQuestionSets(questionSets);
-      this.submitted.set(true);
-      void this.router.navigate(['/exam-preview']);
+      this.validatedQuestionSets.set(questionSets);
+      this.validationMessage.set('Content validated. You can submit now.');
+      this.validated.set(true);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Invalid JSON.';
+      this.validated.set(false);
+      this.validatedQuestionSets.set([]);
       this.error.set(message);
     }
+  }
+
+  protected submit(): void {
+    if (this.form.invalid || !this.validated()) {
+      this.form.markAllAsTouched();
+      this.error.set('Please validate the content before submitting.');
+      return;
+    }
+
+    const questionSets = this.validatedQuestionSets();
+
+    if (!questionSets.length) {
+      this.error.set('Please validate the content before submitting.');
+      this.validated.set(false);
+      return;
+    }
+
+    this.error.set('');
+    this.validationMessage.set('');
+    this.submitted.set(true);
+    this.examState.setQuestionSets(questionSets);
+    void this.router.navigate(['/exam-preview']);
   }
 
   private safeParse(raw: string): unknown {
