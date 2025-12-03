@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 
 import { ExamStateService, QuestionSet, AttemptResult, AnswerResult } from './exam-state.service';
 import { ConfirmDialogComponent } from './confirm-dialog.component';
+import { shuffleOptions } from './utils/shuffle-options';
 
 @Component({
   selector: 'app-exam-execute',
