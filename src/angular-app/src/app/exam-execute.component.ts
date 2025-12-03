@@ -10,7 +10,6 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
 
 @Component({
   selector: 'app-exam-execute',
-  standalone: true,
   imports: [MatCardModule, MatButtonModule, MatCheckboxModule, MatDialogModule],
   templateUrl: './exam-execute.component.html',
   styleUrl: './exam-execute.component.css',
@@ -183,12 +182,26 @@ export class ExamExecuteComponent {
             sectionText: section.text ?? '',
             id: q.id,
             question: q.question,
-            options: q.options
+            options: this.shuffleOptions(q.options)
           });
         });
       });
     });
 
     return all;
+  }
+
+  private shuffleOptions(options?: { text: string; score: number }[]) {
+    if (!options?.length) {
+      return options;
+    }
+
+    const copy = [...options];
+    for (let i = copy.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+
+    return copy;
   }
 }
