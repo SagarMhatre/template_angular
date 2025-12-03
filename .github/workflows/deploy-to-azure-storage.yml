@@ -18,9 +18,11 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: 'src/angular-app/package-lock.json'
+          # make sure this file exists in your repo
 
       - name: Install dependencies and build Angular app
-        working-directory: /workspace/src/angular-app
+        working-directory: src/angular-app
         run: |
           npm ci
           npm run build -- --configuration production --base-href /uat/ --deploy-url /uat/
@@ -32,9 +34,9 @@ jobs:
 
       - name: Deploy to Azure Storage ($web/uat)
         run: |
-          BUILD_DIR="/workspace/src/angular-app/dist/your-app-name"  # adjust as needed
+          # This matches your build output path:
+          BUILD_DIR="src/angular-app/dist/angular-app/browser"
 
-          # Upload to "$web/uat" folder with overwrite
           az storage blob upload-batch \
             --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
             --destination '$web/uat' \
