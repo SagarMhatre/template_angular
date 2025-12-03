@@ -1,4 +1,4 @@
-name: Deploy Angular app to Azure Storage
+name: Deploy Angular UAT app to Azure Storage
 
 on:
   push:
@@ -10,35 +10,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'   # or the version your project uses
+          node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies and build Angular app
+        working-directory: /workspace/src/angular-app
+        run: |
+          npm ci
+          npm run build -- --configuration production --base-href /uat/ --deploy-url /uat/
 
-      - name: Build Angular app
-        run: npm run build -- --configuration production
-
-      # LOGIN TO AZURE
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # UPLOAD BUILD OUTPUT TO $web CONTAINER
-      - name: Deploy to Azure Storage static website
+      - name: Deploy to Azure Storage ($web/uat)
         run: |
-          # Adjust path if your dist structure is different
-          BUILD_DIR="dist/your-app-name"   # or dist/your-app-name/browser, etc.
+          BUILD_DIR="/workspace/src/angular-app/dist/your-app-name"  # adjust as needed
 
+          # Upload to "$web/uat" folder with overwrite
           az storage blob upload-batch \
             --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
-            --destination '$web' \
+            --destination '$web/uat' \
             --source "$BUILD_DIR" \
             --overwrite
