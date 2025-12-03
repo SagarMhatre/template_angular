@@ -36,6 +36,16 @@
   </a>
   <a
     mat-button
+    routerLink="/exam-editor"
+    routerLinkActive="active"
+    #examEditorLink="routerLinkActive"
+    [routerLinkActiveOptions]="{ exact: true }"
+    [attr.aria-current]="examEditorLink.isActive ? 'page' : null"
+  >
+    Exam Editor
+  </a>
+  <a
+    mat-button
     routerLink="/settings"
     routerLinkActive="active"
     #settingsLink="routerLinkActive"
