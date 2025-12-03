@@ -7,10 +7,10 @@ import { Router } from '@angular/router';
 
 import { ExamStateService, QuestionSet, AttemptResult, AnswerResult } from './exam-state.service';
 import { ConfirmDialogComponent } from './confirm-dialog.component';
+import { shuffleOptions } from './utils/shuffle-options';
 
 @Component({
   selector: 'app-exam-execute',
-  standalone: true,
   imports: [MatCardModule, MatButtonModule, MatCheckboxModule, MatDialogModule],
   templateUrl: './exam-execute.component.html',
   styleUrl: './exam-execute.component.css',
@@ -183,7 +183,7 @@ export class ExamExecuteComponent {
             sectionText: section.text ?? '',
             id: q.id,
             question: q.question,
-            options: q.options
+            options: shuffleOptions(q.options)
           });
         });
       });

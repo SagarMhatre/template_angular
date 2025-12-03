@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 
 import { ExamStateService, QuestionSet } from './exam-state.service';
+import { shuffleOptions } from './utils/shuffle-options';
 
 @Component({
   selector: 'app-exam-preview',
@@ -11,7 +12,7 @@ import { ExamStateService, QuestionSet } from './exam-state.service';
   template: `
     <section class="preview">
       <h2>Exam Preview</h2>
-      @if (!questionSets.length) {
+      @if (!previewQuestionSets.length) {
         <p>No exam data found. Please add content in the editor.</p>
       } @else {
         <div class="actions">
@@ -19,7 +20,7 @@ import { ExamStateService, QuestionSet } from './exam-state.service';
             Execute exam
           </button>
         </div>
-        @for (set of questionSets; track set.id) {
+        @for (set of previewQuestionSets; track set.id) {
           <mat-card class="set-card">
             <mat-card-header>
               <mat-card-title>{{ set.name }}</mat-card-title>
@@ -71,9 +72,22 @@ import { ExamStateService, QuestionSet } from './exam-state.service';
 export class ExamPreviewComponent {
   private readonly examState = inject(ExamStateService);
   private readonly router = inject(Router);
-  protected readonly questionSets: QuestionSet[] = this.examState.getQuestionSets();
+  protected readonly previewQuestionSets: QuestionSet[] = this.buildPreviewQuestionSets();
 
   protected goExecute(): void {
     void this.router.navigate(['/exam-execute']);
+  }
+
+  private buildPreviewQuestionSets(): QuestionSet[] {
+    return this.examState.getQuestionSets().map((set) => ({
+      ...set,
+      sections: set.sections?.map((section) => ({
+        ...section,
+        questions: section.questions?.map((q) => ({
+          ...q,
+          options: shuffleOptions(q.options)
+        }))
+      }))
+    }));
   }
 }
