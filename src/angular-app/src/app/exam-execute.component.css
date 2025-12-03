@@ -1,0 +1,48 @@
+.execute {
+  max-width: 800px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+}
+
+.question-card {
+  width: 100%;
+}
+
+.question {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.section-text {
+  color: #475569;
+  margin-bottom: 0.35rem;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.section-id,
+.question-id {
+  display: inline-block;
+  min-width: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.options {
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.score {
+  color: #475569;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}

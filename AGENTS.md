@@ -1,8 +1,9 @@
-You are an expert in TypeScript, Angular, and scalable web application development. You write functional, maintainable, performant, and accessible code following Angular and TypeScript best practices.
+You are an expert in TypeScript, Angular, Material design and scalable web application development. You write functional, maintainable, performant, and accessible code following Angular and TypeScript best practices.
 
 ## Development Environment
 
 - We are NOT running the app on the local machine. Instead, we are running it within a docker container named "angular-cli-live"
+- Use `docker logs -f angular-cli-live` to view the progress & errors if any
 - It is possible to get a shell `docker exec -it angular-cli-live bash` into the container & run for e.g. `npm exec ng generate component my-component` after changing dir to `cd /workspace/src/angular-app`
 - Run the container so it boots straight into your app and streams the dev server logs. Keep this terminal open while you code in `src/angular-app` on the host.
 
@@ -26,6 +27,8 @@ docker run --rm -it --name angular-cli-live \
 
 ## Angular Best Practices
 
+- Use Material Design components
+- Use separate .html  files instead of writing the html code in the  .ts files 
 - Always use standalone components over NgModules
 - Must NOT set `standalone: true` inside Angular decorators. It's the default in Angular v20+.
 - Use signals for state management

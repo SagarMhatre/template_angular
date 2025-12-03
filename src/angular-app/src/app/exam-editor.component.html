@@ -1,0 +1,28 @@
+<section class="editor">
+  <h2>Exam Editor</h2>
+  <form class="editor-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <mat-form-field appearance="fill">
+      <mat-label>Exam content</mat-label>
+      <textarea
+        matInput
+        rows="6"
+        formControlName="content"
+        required
+        [attr.aria-invalid]="form.controls.content.invalid && form.controls.content.touched"
+      ></textarea>
+      @if (form.controls.content.invalid && form.controls.content.touched) {
+        <mat-error>Content is required.</mat-error>
+      }
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+      Submit
+    </button>
+  </form>
+  @if (error()) {
+    <p class="status error" role="alert">{{ error() }}</p>
+  }
+  @if (submitted()) {
+    <p class="status">Submitted! Redirecting to preview…</p>
+  }
+</section>

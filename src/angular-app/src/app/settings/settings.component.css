@@ -1,0 +1,26 @@
+.settings-card {
+  max-width: 600px;
+  margin: 0 auto;
+  margin-top: 1.25rem;
+}
+
+.status {
+  margin-top: 0.75rem;
+  color: #0f172a;
+}
+
+.status.error {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+.settings-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}

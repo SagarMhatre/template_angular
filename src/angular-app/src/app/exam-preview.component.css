@@ -1,0 +1,41 @@
+.preview {
+  display: grid;
+  gap: 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.set-card {
+  width: 100%;
+}
+
+.section {
+  margin-top: 0.75rem;
+}
+
+.question {
+  margin: 0.25rem 0;
+}
+
+.score {
+  color: #475569;
+}
+
+.options {
+  padding-left: 1.25rem;
+}
+
+.options li.positive {
+  color: #166534;
+  font-weight: 600;
+}
+
+.options li.negative {
+  color: #b91c1c;
+  font-weight: 600;
+}

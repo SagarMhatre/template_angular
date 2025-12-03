@@ -25,6 +25,26 @@
     Home
   </a>
   <a
+    mat-button
+    routerLink="/kids"
+    routerLinkActive="active"
+    #kidsLink="routerLinkActive"
+    [routerLinkActiveOptions]="{ exact: true }"
+    [attr.aria-current]="kidsLink.isActive ? 'page' : null"
+  >
+    Kids
+  </a>
+  <a
+    mat-button
+    routerLink="/settings"
+    routerLinkActive="active"
+    #settingsLink="routerLinkActive"
+    [routerLinkActiveOptions]="{ exact: true }"
+    [attr.aria-current]="settingsLink.isActive ? 'page' : null"
+  >
+    Settings
+  </a>
+  <a
     mat-stroked-button
     color="accent"
     routerLink="/login"

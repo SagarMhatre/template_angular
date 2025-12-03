@@ -1,0 +1,61 @@
+<section class="execute">
+  <h2>{{ currentQuestion()!.setName }}</h2>
+  @if (!flatQuestions().length) {
+    <p>No exam data found. Please add content in the editor.</p>
+  } @else {
+    <mat-card class="question-card">
+      <mat-card-content>
+        <p class="section-text">
+          <span class="section-id">{{ currentQuestion()!.sectionId }}</span>
+          <span>{{ currentQuestion()!.sectionText }}</span>
+        </p>
+        <p class="question">
+          <span class="question-id">{{ currentQuestion()!.id }}</span>
+          <span>{{ currentQuestion()!.question }}</span>
+        </p>
+        @if (currentQuestion()!.options?.length) {
+          <ul class="options">
+            @for (opt of currentQuestion()!.options ?? []; track opt.text) {
+              <li>
+                <mat-checkbox [checked]="isSelected(opt.text)" (change)="toggleOption(opt.text)">
+                  {{ opt.text }}
+                </mat-checkbox>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p>No options for this question.</p>
+        }
+      </mat-card-content>
+      <mat-card-actions align="end" class="actions">
+        <button mat-stroked-button type="button" (click)="prev()" [disabled]="atFirst()">
+          Prev
+        </button>
+        <button mat-button type="button" (click)="skip()" [disabled]="hasSelection()">
+          Skip
+        </button>
+        @if (!atLast()) {
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            (click)="next()"
+            [disabled]="!hasSelection()"
+          >
+            Next
+          </button>
+        } @else {
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            (click)="finish()"
+            [disabled]="!hasSelection()"
+          >
+            End
+          </button>
+        }
+      </mat-card-actions>
+    </mat-card>
+  }
+</section>

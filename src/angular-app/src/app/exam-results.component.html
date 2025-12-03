@@ -1,0 +1,120 @@
+<section class="results">
+  <h2>Exam Results</h2>
+  @if (!result) {
+    <p>No results available. Execute an exam to see results here.</p>
+  } @else {
+    <mat-card class="result-card">
+      <mat-card-header>
+        <mat-card-title>Question set: {{ result.question_set_id }}</mat-card-title>
+        <mat-card-subtitle>Kid: {{ result.kid_id ?? 'N/A' }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p><strong>Total score:</strong> {{ result.score }}</p>
+        <p>
+          <strong>Start:</strong> {{ result.attempt_start }} |
+          <strong>End:</strong> {{ result.attempt_end }}
+        </p>
+        <div class="filters" role="group" aria-label="Answer filters">
+          <mat-button-toggle-group [value]="filter()" (change)="setFilter($event.value)">
+            <mat-button-toggle value="all">All</mat-button-toggle>
+            <mat-button-toggle value="correct">Correct</mat-button-toggle>
+            <mat-button-toggle value="incorrect">Incorrect</mat-button-toggle>
+            <mat-button-toggle value="skipped">Skipped</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+        <table class="answers" aria-label="Answer details">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Score</th>
+              <th>Correct selected</th>
+              <th>Correct unselected</th>
+              <th>Incorrect selected</th>
+              <th>Duration (ms)</th>
+              <th>Correct?</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (a of filteredAnswers(); track a.question_id) {
+              <tr>
+                <td>{{ a.question_id }}</td>
+                <td>{{ a.score }}</td>
+                <td>{{ a.correct_selected.join(', ') || '—' }}</td>
+                <td>{{ a.correct_unselected.join(', ') || '—' }}</td>
+                <td>{{ a.incorrect_selected.join(', ') || '—' }}</td>
+                <td>{{ (a.duration / 1000) | number:'1.2-2' }}</td>
+                <td>
+                  @if ((a.correct_selected.length + a.incorrect_selected.length) === 0) {
+                    Skipped
+                  } @else if (a.is_correct) {
+                    Yes
+                  } @else {
+                    No
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="result-card">
+      <mat-card-header>
+        <mat-card-title>Answers preview</mat-card-title>
+        <mat-card-subtitle>Selections highlighted</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        @if (!questionSets.length) {
+          <p>No exam data found.</p>
+        } @else {
+          @for (set of questionSets; track set.id) {
+            <div class="set-preview">
+              <h3>{{ set.name }}</h3>
+              @if (!set.sections?.length) {
+                <p>No sections.</p>
+              } @else {
+                @for (section of set.sections; track section.id) {
+                  @if (showSection(section.id, questionIds(section))) {
+                  <div class="section">
+                    <p class="section-text">
+                      <span class="section-id">{{ section.id }}</span>
+                      <span>{{ section.text }}</span>
+                    </p>
+                    @if (!section.questions?.length) {
+                      <p>No questions.</p>
+                    } @else {
+                      @for (q of section.questions; track q.id) {
+                        @if (showQuestion(q.id)) {
+                          <div class="question-block">
+                            <div class="question">
+                              <span class="question-id">{{ q.id }}</span>
+                              <span>{{ q.question }}</span>
+                            </div>
+                            @if (q.options?.length) {
+                              <ul class="options">
+                                @for (opt of q.options; track opt.text; let idx = $index) {
+                                  <li [class]="optionClass(q.id, idx, opt.score)">
+                                    <mat-checkbox disabled [checked]="isSelected(q.id, idx)">
+                                      {{ opt.text }}
+                                    </mat-checkbox>
+                                  </li>
+                                }
+                              </ul>
+                            }
+                          </div>
+                        }
+                      }
+                    }
+                  </div>
+                  }
+                }
+              }
+            </div>
+          }
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</section>

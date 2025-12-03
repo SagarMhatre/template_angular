@@ -1,0 +1,20 @@
+.editor {
+  max-width: 720px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+}
+
+.editor-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.status {
+  color: #0f172a;
+}
+
+.status.error {
+  color: #b91c1c;
+  font-weight: 600;
+}
