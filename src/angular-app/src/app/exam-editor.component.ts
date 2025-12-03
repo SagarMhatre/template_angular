@@ -103,7 +103,7 @@ export class ExamEditorComponent {
 
     try {
       const parsed = this.safeParse(raw);
-      const questionSets = this.normalizeQuestionSets(parsed);
+      const questionSets = this.shuffleQuestionSets(this.normalizeQuestionSets(parsed));
       if (!questionSets.length) {
         this.error.set('No question_sets found.');
         return;
@@ -150,5 +150,34 @@ export class ExamEditorComponent {
     }
 
     return [];
+  }
+
+  private shuffleQuestionSets(questionSets: QuestionSet[]): QuestionSet[] {
+    // Shuffle deterministically once on submission so preview and execute share the same order.
+    let seed = 1234567;
+    const rand = () => {
+      seed = (seed * 9301 + 49297) % 233280;
+      return seed / 233280;
+    };
+
+    const shuffleArray = <T>(items: T[]): T[] => {
+      const copy = [...items];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(rand() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    };
+
+    return questionSets.map((set) => ({
+      ...set,
+      sections: set.sections?.map((section) => ({
+        ...section,
+        questions: section.questions?.map((q) => ({
+          ...q,
+          options: q.options ? shuffleArray(q.options) : q.options
+        }))
+      }))
+    }));
   }
 }

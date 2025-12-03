@@ -4,7 +4,6 @@ import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 
 import { ExamStateService, QuestionSet } from './exam-state.service';
-import { shuffleOptions } from './utils/shuffle-options';
 
 @Component({
   selector: 'app-exam-preview',
@@ -79,15 +78,22 @@ export class ExamPreviewComponent {
   }
 
   private buildPreviewQuestionSets(): QuestionSet[] {
-    return this.examState.getQuestionSets().map((set) => ({
-      ...set,
-      sections: set.sections?.map((section) => ({
-        ...section,
-        questions: section.questions?.map((q) => ({
-          ...q,
-          options: shuffleOptions(q.options)
-        }))
-      }))
-    }));
+    const sets = this.examState.getQuestionSets();
+
+    console.debug(
+      'Preview option order',
+      sets.flatMap((set) =>
+        set.sections?.flatMap((section) =>
+          section.questions?.map((q) => ({
+            setId: set.id,
+            sectionId: section.id,
+            questionId: q.id,
+            options: q.options?.map((o) => o.text)
+          })) ?? []
+        ) ?? []
+      )
+    );
+
+    return sets;
   }
 }

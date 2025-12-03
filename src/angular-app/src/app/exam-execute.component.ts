@@ -183,26 +183,22 @@ export class ExamExecuteComponent {
             sectionText: section.text ?? '',
             id: q.id,
             question: q.question,
-            options: this.shuffleOptions(q.options)
+            options: q.options
           });
         });
       });
     });
 
+    console.debug(
+      'Execute option order',
+      all.map((q) => ({
+        setId: q.setId,
+        sectionId: q.sectionId,
+        questionId: q.id,
+        options: q.options?.map((o) => o.text)
+      }))
+    );
+
     return all;
-  }
-
-  private shuffleOptions(options?: { text: string; score: number }[]) {
-    if (!options?.length) {
-      return options;
-    }
-
-    const copy = [...options];
-    for (let i = copy.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-
-    return copy;
   }
 }
