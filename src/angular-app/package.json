@@ -31,6 +31,7 @@
     "@angular/forms": "^21.0.0",
     "@angular/material": "^21.0.1",
     "@angular/platform-browser": "^21.0.0",
+    "@angular/service-worker": "^21.0.0",
     "@angular/router": "^21.0.0",
     "@types/pouchdb-browser": "^6.1.5",
     "events": "^3.3.0",
