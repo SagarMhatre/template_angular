@@ -27,6 +27,11 @@
             ],
             "styles": [
               "src/styles.css"
+            ],
+            "allowedCommonJsDependencies": [
+              "spark-md5",
+              "vuvuzela",
+              "events"
             ]
           },
             "configurations": {
