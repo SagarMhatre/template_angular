@@ -5,6 +5,28 @@
   } @else {
     <mat-card class="question-card">
       <mat-card-content>
+        <div class="assist-controls" role="group" aria-label="Audio controls">
+          <button
+            mat-icon-button
+            type="button"
+            (click)="speakQuestion()"
+            aria-label="Read question aloud"
+            [matTooltip]="'Read question aloud'"
+          >
+            <mat-icon aria-hidden="true">volume_up</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            type="button"
+            (click)="toggleListening()"
+            [attr.aria-pressed]="listening()"
+            [attr.aria-label]="listening() ? 'Stop microphone listening' : 'Start microphone listening'"
+            [matTooltip]="listening() ? 'Stop listening' : 'Start listening'"
+            [class.active]="listening()"
+          >
+            <mat-icon aria-hidden="true">{{ listening() ? 'mic_off' : 'mic' }}</mat-icon>
+          </button>
+        </div>
         <p class="section-text">
           <span class="section-id">{{ currentQuestion()!.sectionId }}</span>
           <span>{{ currentQuestion()!.sectionText }}</span>

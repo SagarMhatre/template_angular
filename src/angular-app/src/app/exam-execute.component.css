@@ -9,6 +9,17 @@
   width: 100%;
 }
 
+.assist-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.assist-controls button.active {
+  color: #1d4ed8;
+}
+
 .question {
   font-weight: 600;
   margin-bottom: 0.75rem;

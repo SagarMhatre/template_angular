@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, Signal, signal } from '@angular/core';
 
 type QuestionOption = {
   text: string;
@@ -52,6 +52,7 @@ export type AttemptResult = {
 export class ExamStateService {
   protected readonly questionSets = signal<QuestionSet[]>([]);
   protected readonly lastResult = signal<AttemptResult | null>(null);
+  protected readonly voiceEnabled = signal(false);
 
   setQuestionSets(questionSets: QuestionSet[]): void {
     this.questionSets.set(questionSets);
@@ -67,5 +68,17 @@ export class ExamStateService {
 
   getResult(): AttemptResult | null {
     return this.lastResult();
+  }
+
+  setVoiceEnabled(enabled: boolean): void {
+    this.voiceEnabled.set(enabled);
+  }
+
+  getVoiceEnabled(): boolean {
+    return this.voiceEnabled();
+  }
+
+  voiceEnabledSignal(): Signal<boolean> {
+    return this.voiceEnabled.asReadonly();
   }
 }

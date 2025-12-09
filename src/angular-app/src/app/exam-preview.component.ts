@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Router } from '@angular/router';
 
 import { ExamStateService, QuestionSet } from './exam-state.service';
 
 @Component({
   selector: 'app-exam-preview',
-  imports: [MatCardModule, MatButtonModule],
+  imports: [MatCardModule, MatButtonModule, MatCheckboxModule],
   template: `
     <section class="preview">
       <h2>Exam Preview</h2>
@@ -15,6 +16,13 @@ import { ExamStateService, QuestionSet } from './exam-state.service';
         <p>No exam data found. Please add content in the editor.</p>
       } @else {
         <div class="actions">
+          <mat-checkbox
+            [checked]="voiceEnabled()"
+            (change)="setVoiceAssist($event.checked)"
+            aria-label="Enable voice assistant"
+          >
+            Enable voice assistant
+          </mat-checkbox>
           <button mat-flat-button color="primary" type="button" (click)="goExecute()">
             Execute exam
           </button>
@@ -71,10 +79,15 @@ import { ExamStateService, QuestionSet } from './exam-state.service';
 export class ExamPreviewComponent {
   private readonly examState = inject(ExamStateService);
   private readonly router = inject(Router);
+  protected readonly voiceEnabled = this.examState.voiceEnabledSignal();
   protected readonly previewQuestionSets: QuestionSet[] = this.buildPreviewQuestionSets();
 
   protected goExecute(): void {
     void this.router.navigate(['/exam-execute']);
+  }
+
+  protected setVoiceAssist(enabled: boolean): void {
+    this.examState.setVoiceEnabled(enabled);
   }
 
   private buildPreviewQuestionSets(): QuestionSet[] {
