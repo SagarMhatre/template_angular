@@ -101,8 +101,10 @@ export class ExamExecuteComponent implements OnInit, OnDestroy {
   private transcriptBuffer = '';
   private autoListenAfterSpeech = false;
   private lastHandledTranscript = '';
+  private readonly spokenSections = new Set<string | number>();
 
   ngOnInit(): void {
+    this.spokenSections.clear();
     if (this.voiceEnabled()) {
       this.speakQuestion();
     }
@@ -180,8 +182,10 @@ export class ExamExecuteComponent implements OnInit, OnDestroy {
     }
     this.stopSpeech();
     const segments: string[] = [];
-    if (q.sectionText) {
+    const shouldSpeakSection = q.sectionText && !this.spokenSections.has(q.sectionId);
+    if (shouldSpeakSection) {
       segments.push(`Section ${q.sectionId}: ${this.formatSpeechText(q.sectionText)}`);
+      this.spokenSections.add(q.sectionId);
     }
     segments.push(`Question ${q.id}: ${this.formatSpeechText(q.question)}`);
     if (q.options?.length) {
@@ -418,7 +422,7 @@ export class ExamExecuteComponent implements OnInit, OnDestroy {
     console.log('Speech transcript:', transcript);
     const selectedNumber = this.parseSpokenNumber(transcript);
     if (selectedNumber === null) {
-      const command = this.parseSpokenCommand(transcript);
+      const command = this.parseSpokenCommand(transcript, this.atLast());
       if (command) {
         console.log('Parsed spoken command:', command);
         this.runCommand(command);
@@ -510,7 +514,7 @@ export class ExamExecuteComponent implements OnInit, OnDestroy {
         this.selectOptionByIndex(selectedNumber - 1);
         this.lastHandledTranscript = transcript.toLowerCase();
       } else {
-        const command = this.parseSpokenCommand(transcript);
+        const command = this.parseSpokenCommand(transcript, this.atLast());
         if (command) {
           console.log('Parsed spoken command (final):', command);
           this.runCommand(command);
@@ -535,9 +539,12 @@ export class ExamExecuteComponent implements OnInit, OnDestroy {
     return text.replace(/_{2,}/g, ' dash ').replace(/_/g, ' dash ');
   }
 
-  private parseSpokenCommand(transcript: string): 'next' | 'previous' | 'skip' | null {
+  private parseSpokenCommand(
+    transcript: string,
+    isLast: boolean
+  ): 'next' | 'previous' | 'skip' | 'end' | null {
     const normalized = transcript.toLowerCase();
-    if (/\bnext\b/.test(normalized)) {
+    if (!isLast && /\bnext\b/.test(normalized)) {
       return 'next';
     }
     if (/\b(prev|previous)\b/.test(normalized)) {
@@ -546,16 +553,21 @@ export class ExamExecuteComponent implements OnInit, OnDestroy {
     if (/\bskip\b/.test(normalized)) {
       return 'skip';
     }
+    if (isLast && (/\bend\b/.test(normalized) || /\bfinish\b/.test(normalized))) {
+      return 'end';
+    }
     return null;
   }
 
-  private runCommand(command: 'next' | 'previous' | 'skip'): void {
+  private runCommand(command: 'next' | 'previous' | 'skip' | 'end'): void {
     if (command === 'next') {
       this.next();
     } else if (command === 'previous') {
       this.prev();
     } else if (command === 'skip') {
       this.skip();
+    } else if (command === 'end') {
+      this.finish();
     }
   }
 

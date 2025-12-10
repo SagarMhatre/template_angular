@@ -117,7 +117,7 @@ export class ExamEditorComponent {
     this.error.set('');
     this.submitted.set(false);
 
-    const raw = this.form.controls.content.value;
+    const raw = this.sanitizeSmartQuotes(this.form.controls.content.value);
 
     try {
       const parsed = this.safeParse(raw);
@@ -194,6 +194,10 @@ export class ExamEditorComponent {
     }
 
     return [];
+  }
+
+  private sanitizeSmartQuotes(raw: string): string {
+    return raw.replace(/[“”]/g, '"');
   }
 
   private shuffleQuestionSets(questionSets: QuestionSet[]): QuestionSet[] {
